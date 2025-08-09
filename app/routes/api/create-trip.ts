@@ -86,7 +86,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     )
 
     const tripDetail = parseTripData(result.tripDetail) as Trip;
-    const tripPrice = parseInt(tripDetail.estimatedPrice.replace('$', ''), 10)
+    const tripPrice = parseInt(tripDetail.estimatedPrice.replace('KES', ''), 10)
     const paymentLink = await createProduct(
       tripDetail.name,
       tripDetail.description,
