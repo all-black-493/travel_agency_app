@@ -21,6 +21,7 @@ export const loader = async () => {
   }))
 }
 const CreateTrip = ({ loaderData }: Route.ComponentProps) => {
+  
   const countries = (loaderData ?? []) as Country[]
   const navigate = useNavigate();
 
@@ -35,6 +36,7 @@ const CreateTrip = ({ loaderData }: Route.ComponentProps) => {
 
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
@@ -60,6 +62,7 @@ const CreateTrip = ({ loaderData }: Route.ComponentProps) => {
     if (!user.$id) {
       console.error('User not authenticated')
       setLoading(false)
+      navigate('/sign-in')
       return
     }
     try {
