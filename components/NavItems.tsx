@@ -1,13 +1,17 @@
-import { Link, NavLink } from "react-router"
+import { Link, NavLink, useLoaderData, useNavigate } from "react-router"
+import { logoutUser } from "~/appwrite/auth"
 import { sidebarItems } from "~/constants"
 import { cn } from "~/lib/utils"
 
-const NavItems = ( {handleClick}: {handleClick?: () => void}) => {
-    const user={
-        name: "Okello",
-        email: 'justinjerome401@gmail.com',
-        imageUrl:'/assets/images/david.webp'
+const NavItems = ({ handleClick }: { handleClick?: () => void }) => {
+    const user = useLoaderData()
+    const navigate = useNavigate()
+
+    const handleLogout = async()=>{
+        await logoutUser();
+        navigate('/sign-in')
     }
+
     return (
         <section className="nav-items">
             <Link to='/' className="link-logo">
@@ -16,13 +20,13 @@ const NavItems = ( {handleClick}: {handleClick?: () => void}) => {
             </Link>
             <div className="container">
                 <nav>
-                    {sidebarItems.map(({id, href, icon, label})=> (
+                    {sidebarItems.map(({ id, href, icon, label }) => (
                         <NavLink to={href} key={id}>
                             {({ isActive }: { isActive: boolean }) => (
-                                <div className={ cn('group nav-item',{
-                                    'bg-primary-100 !text-white':isActive
+                                <div className={cn('group nav-item', {
+                                    'bg-primary-100 !text-white': isActive
                                 })}
-                                onClick={handleClick}>
+                                    onClick={handleClick}>
                                     <img src={icon} alt={label} className={`group-hover:brightness-0 size-0 group-hover:invert ${isActive ? 'brightness-0 invert' : 'text-dark-200'}`} />
                                     {label}
                                 </div>
@@ -31,7 +35,7 @@ const NavItems = ( {handleClick}: {handleClick?: () => void}) => {
                     ))}
                 </nav>
                 <footer className="nav-footer">
-                    <img src={user?.imageUrl} alt={user?.name} />
+                    <img src={user?.imageUrl} alt={user?.name} referrerPolicy="no-referrer" />
                     <article>
                         <h2>
                             {user?.name}
@@ -39,9 +43,7 @@ const NavItems = ( {handleClick}: {handleClick?: () => void}) => {
                         </h2>
                     </article>
                     <button
-                        onClick={() => {
-                            console.log("Logout action triggered");
-                        }}
+                        onClick={handleLogout}
                         className="cursor-pointer">
                         <img src="/assets/icons/logout.svg" alt="logout" className="size-6" />
                     </button>

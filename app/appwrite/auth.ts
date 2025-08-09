@@ -75,11 +75,19 @@ export const loginWithGoogle = async () => {
 
 export const logoutUser = async () => {
   try {
+    await account.get();
+
     await account.deleteSession("current");
-  } catch (error) {
-    console.error("Error during logout:", error);
+    console.log("User successfully logged out.");
+  } catch (error: any) {
+    if (error?.message?.includes("missing scope")) {
+      console.warn("User already logged out or not authenticated.");
+    } else {
+      console.error("Unexpected error during logout:", error);
+    }
   }
 };
+
 
 export const getUser = async () => {
   try {
@@ -101,3 +109,19 @@ export const getUser = async () => {
     return null;
   }
 };
+
+export const getAllUsers = async (limit:number, offset: number) => {
+  try {
+    const { documents:users, total } = await database.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.usersCollectionId,
+      [Query.limit(limit), Query.offset(offset)]
+    );
+    if(total===0) return {users: [], total}; 
+
+    return { users, total };
+  } catch (error) {
+    console.error("Error fetching all users:", error);
+    return { users: [], total: 0 };
+  }
+}
