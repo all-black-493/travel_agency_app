@@ -3,7 +3,9 @@ import { ChipDirective, ChipListComponent, ChipsDirective } from "@syncfusion/ej
 import { cn, getFirstWord } from "~/lib/utils"
 
 const TripCard = ({ id, name, imageUrl, location, tags, price }: TripCardProps) => {
+
     const path = useLocation()
+    
     return (
         <div>
             <Link to={path.pathname === '/' || path.pathname.startsWith('/travel') ? `/travel/${id}` : `/trips/${id}`} className="trip-card">
