@@ -1,10 +1,10 @@
-import { GoogleGenerativeAI } from "@google/generative-ai"
-import { ID } from "appwrite"
-import type { ActionFunctionArgs } from "react-router"
-import { data } from "react-router"
-import { appwriteConfig, database } from "~/appwrite/client"
-import { parseMarkdownToJson, parseTripData } from "~/lib/utils"
-import { createProduct } from "~/lib/stripe"
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { ID } from "appwrite";
+import type { ActionFunctionArgs } from "react-router";
+import { data } from "react-router";
+import { appwriteConfig, database } from "~/appwrite/client";
+import { parseMarkdownToJson, parseTripData } from "~/lib/utils";
+import { createProduct } from "~/lib/stripe";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const {
@@ -15,10 +15,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     budget,
     groupType,
     userId,
-  } = await request.json()
+  } = await request.json();
 
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
   const unsplashApiKey = process.env.UNSPLASH_ACCESS_KEY!;
+
   try {
     const prompt = `Generate a ${numberOfDays}-day travel itinerary for ${country} based on the following user information:
         Budget: '${budget}'
@@ -66,13 +67,20 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         ...
         ]
         }`;
-    const textResult = await genAI
-      .getGenerativeModel({ model: 'gemini-2.0-flash' })
-      .generateContent([prompt])
 
-    const trip = parseMarkdownToJson(textResult.response.text())
-    const imageResponse = await fetch(`https://api.unsplash.com/search/photos?query=${country} ${interests} ${travelStyle}&client_id=${unsplashApiKey}`)
-    const imageUrls = (await imageResponse.json()).results.slice(0, 3).map((result: any) => result.urls?.regular || null)
+    const textResult = await genAI
+      .getGenerativeModel({ model: "gemini-2.0-flash" })
+      .generateContent([prompt]);
+
+    const trip = parseMarkdownToJson(textResult.response.text());
+
+    const imageResponse = await fetch(
+      `https://api.unsplash.com/search/photos?query=${country} ${interests} ${travelStyle}&client_id=${unsplashApiKey}`
+    );
+    const imageUrls = (await imageResponse.json()).results
+      .slice(0, 3)
+      .map((result: any) => result.urls?.regular || null);
+
     const result = await database.createDocument(
       appwriteConfig.databaseId,
       appwriteConfig.tripsCollectionId,
@@ -83,30 +91,38 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         imageUrls,
         userId,
       }
-    )
+    );
 
     const tripDetail = parseTripData(result.tripDetail) as Trip;
-    const tripPrice = parseInt(tripDetail.estimatedPrice.replace('KES', ''), 10)
+
+    const rawPrice = tripDetail.estimatedPrice || "";
+    const numericPrice = rawPrice.replace(/[^\d]/g, "");
+    const tripPrice = parseInt(numericPrice, 10);
+
+    if (isNaN(tripPrice) || tripPrice <= 0) {
+      throw new Error(`Invalid price from AI: "${tripDetail.estimatedPrice}"`);
+    }
+
     const paymentLink = await createProduct(
       tripDetail.name,
       tripDetail.description,
       imageUrls,
       tripPrice,
       result.$id
-    )
+    );
 
     await database.updateDocument(
       appwriteConfig.databaseId,
       appwriteConfig.tripsCollectionId,
       result.$id,
       {
-        payment_link: paymentLink.url
+        payment_link: paymentLink.url,
       }
-    )
+    );
 
-    return data({ id: result.$id })
+    return data({ id: result.$id });
   } catch (e) {
-    console.error('Error Generating Travel Plan: ', e)
+    console.error("Error Generating Travel Plan: ", e);
+    throw e; // rethrow so the client knows it failed
   }
-}
-
+};
