@@ -104,8 +104,7 @@ const TripDetail = ({ loaderData }: Route.ComponentProps) => {
                     <ul className="flex gap-1 items-center">
                         {Array(5).fill('null').map((_, index) => (
                             <li key={index}>
-                                <img src="assets/icons/star.svg" alt="star" className="size-[18px]" />
-
+                                <img src="/assets/icons/star.svg" alt="star" className="size-[18px]" />
                             </li>
                         ))}
 

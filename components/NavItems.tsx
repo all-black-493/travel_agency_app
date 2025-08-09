@@ -15,7 +15,7 @@ const NavItems = ({ handleClick }: { handleClick?: () => void }) => {
     return (
         <section className="nav-items">
             <Link to='/' className="link-logo">
-                <img src="assets/icons/logo.svg" alt="logo" className="size-[30px]" />
+                <img src="/assets/icons/logo.svg" alt="logo" className="size-[30px]" />
                 <h1>Touravel</h1>
             </Link>
             <div className="container">
