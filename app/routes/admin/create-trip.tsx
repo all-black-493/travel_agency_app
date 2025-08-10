@@ -110,7 +110,7 @@ const CreateTrip = ({ loaderData }: Route.ComponentProps) => {
     <main className="flex flex-col gap-10 pb-20 wrapper">
       <Header
         title='Add a New Trip'
-        description='View and Edit Ai generated travel plans' />
+        description='View and Edit AI-Generated travel plans' />
 
       <section className="mt-2.5 wrapper-md">
         <form className="trip-form" onSubmit={handleSubmit}>
@@ -150,7 +150,7 @@ const CreateTrip = ({ loaderData }: Route.ComponentProps) => {
             </label>
             <input
               id="duration"
-              placeholder='Enter a number of days'
+              placeholder='Enter a number of days ( Duration must be between 1 and 7 days )'
               type="number"
               className="form-input placeholder:text-gray-100"
               onChange={(e) => handleChange('duration', Number(e.target.value))} />
