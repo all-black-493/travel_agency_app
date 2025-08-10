@@ -30,7 +30,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         {
         "name": "A descriptive title for the trip",
         "description": "A brief description of the trip and its highlights not exceeding 100 words",
-        "estimatedPrice": "Lowest average price for the trip in Kenyan Shillings, e.g.$price",
+        "estimatedPrice": "Lowest average price for the trip in US Dollars, e.g.$price",
         "duration": ${numberOfDays},
         "budget": "${budget}",
         "travelStyle": "${travelStyle}",
@@ -96,7 +96,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const tripDetail = parseTripData(result.tripDetail) as Trip;
 
     const rawPrice = tripDetail.estimatedPrice || "";
-    const numericPrice = rawPrice.replace(/[^\d]/g, "");
+    const numericPrice = rawPrice.replace(/[^\d]/g, ""); 
     const tripPrice = parseInt(numericPrice, 10);
 
     if (isNaN(tripPrice) || tripPrice <= 0) {

@@ -52,8 +52,8 @@ const CreateTrip = ({ loaderData }: Route.ComponentProps) => {
       return
     }
 
-    if (formData.duration < 1 || formData.duration > 10) {
-      setError('Duration must be between 1 and 10 days')
+    if (formData.duration < 1 || formData.duration > 7) {
+      setError('Duration must be between 1 and 7 days')
       setLoading(false)
       return
     }

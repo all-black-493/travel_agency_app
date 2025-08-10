@@ -44,6 +44,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         getAllTrips(limit, offset),
     ])
 
+
     return {
         trips: allTrips.map(({ $id, tripDetail, imageUrls }) => ({
             id: $id,
