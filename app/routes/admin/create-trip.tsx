@@ -150,7 +150,7 @@ const CreateTrip = ({ loaderData }: Route.ComponentProps) => {
             </label>
             <input
               id="duration"
-              placeholder='Enter a number of days ( Duration must be between 1 and 7 days )'
+              placeholder='Enter a no. of days. Max: 7'
               type="number"
               className="form-input placeholder:text-gray-100"
               onChange={(e) => handleChange('duration', Number(e.target.value))} />
